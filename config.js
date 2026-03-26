@@ -5,5 +5,5 @@ window.APP_CONFIG = {
         window.location.protocol === 'file:'
     )
         ? 'http://localhost:3000'
-        : 'https://YOUR-RENDER-SERVICE.onrender.com'
+        : 'https://bcmakerpro.onrender.com'
 };
