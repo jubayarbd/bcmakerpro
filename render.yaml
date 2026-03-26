@@ -3,5 +3,5 @@ services:
     name: birth-certificate-api
     env: node
     plan: free
-    buildCommand: npm install
+    buildCommand: npm install && npx puppeteer browsers install
     startCommand: npm start
