@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - BC Auto-Filler</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="config.js"></script>
+    <style>
+        :root {
+            --bg-a: #edf6f4;
+            --bg-b: #f8fafc;
+            --card: rgba(255, 255, 255, 0.88);
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: rgba(148, 163, 184, 0.24);
+            --primary: #0f766e;
+            --primary-deep: #155e75;
+            --error-bg: rgba(239, 68, 68, 0.08);
+            --error-text: #b91c1c;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(15, 118, 110, 0.15), transparent 30%),
+                radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.18), transparent 32%),
+                linear-gradient(135deg, var(--bg-a), var(--bg-b));
+        }
+
+        .login-shell {
+            width: 100%;
+            max-width: 980px;
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            overflow: hidden;
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.42);
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(18px);
+            box-shadow: 0 30px 80px rgba(15, 23, 42, 0.16);
+        }
+
+        .login-side {
+            padding: 48px;
+            position: relative;
+            overflow: hidden;
+            color: #f8fafc;
+            background:
+                linear-gradient(160deg, rgba(15, 118, 110, 0.97), rgba(21, 94, 117, 0.92)),
+                #0f766e;
+        }
+
+        .login-side::before,
+        .login-side::after {
+            content: "";
+            position: absolute;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .login-side::before {
+            width: 220px;
+            height: 220px;
+            top: -70px;
+            right: -45px;
+        }
+
+        .login-side::after {
+            width: 180px;
+            height: 180px;
+            left: -45px;
+            bottom: -60px;
+        }
+
+        .brand-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.12);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .brand-chip i {
+            font-size: 14px;
+        }
+
+        .login-side h1 {
+            margin: 22px 0 14px;
+            font-size: 38px;
+            line-height: 1.08;
+            font-weight: 800;
+        }
+
+        .login-side p {
+            margin: 0;
+            max-width: 420px;
+            color: rgba(248, 250, 252, 0.84);
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .login-points {
+            margin-top: 34px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .login-point {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: rgba(248, 250, 252, 0.92);
+        }
+
+        .login-point i {
+            width: 34px;
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .login-box {
+            padding: 44px 38px;
+            background: var(--card);
+            display: flex;
+            align-items: center;
+        }
+
+        .login-panel {
+            width: 100%;
+        }
+
+        .panel-icon {
+            width: 62px;
+            height: 62px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(15, 118, 110, 0.12), rgba(59, 130, 246, 0.12));
+            color: var(--primary);
+            font-size: 26px;
+            margin-bottom: 18px;
+        }
+
+        .login-box h2 {
+            margin: 0;
+            font-size: 29px;
+            line-height: 1.2;
+        }
+
+        .login-subtitle {
+            margin: 10px 0 28px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 7px;
+            color: var(--muted);
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px 14px 42px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.92);
+            font-size: 14px;
+            color: var(--text);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+        }
+
+        .input-group input:focus {
+            border-color: rgba(15, 118, 110, 0.45);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .btn-login {
+            width: 100%;
+            border: none;
+            border-radius: 16px;
+            padding: 14px 18px;
+            font-size: 15px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--primary), var(--primary) 44%, #0ea5e9);
+            box-shadow: 0 16px 28px rgba(15, 118, 110, 0.22);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 20px 32px rgba(15, 118, 110, 0.26);
+        }
+
+        .btn-login:disabled {
+            cursor: wait;
+            opacity: 0.85;
+            transform: none;
+            box-shadow: 0 10px 18px rgba(15, 118, 110, 0.18);
+        }
+
+        .error-msg {
+            color: var(--error-text);
+            background: var(--error-bg);
+            border: 1px solid rgba(239, 68, 68, 0.12);
+            border-radius: 12px;
+            font-size: 13px;
+            margin-top: 16px;
+            padding: 12px 14px;
+            display: none;
+            font-weight: 500;
+        }
+
+        @media (max-width: 860px) {
+            .login-shell {
+                grid-template-columns: 1fr;
+                max-width: 560px;
+            }
+
+            .login-side,
+            .login-box {
+                padding: 32px 24px;
+            }
+
+            .login-side h1 {
+                font-size: 31px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-shell">
+        <div class="login-side">
+            <div class="brand-chip">
+                <i class="fa-solid fa-certificate"></i>
+                <span>BC Auto-Filler Pro</span>
+            </div>
+            <h1>Secure access for certificate work</h1>
+            <p>Log in with your authorized credentials.</p>
+
+            <div class="login-points">
+                <div class="login-point">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Authorized user credentials required</span>
+                </div>
+                
+                <div class="login-point">
+                    <i class="fa-solid fa-key"></i>
+                    <span>Contact admin for log in credentials</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-box">
+            <div class="login-panel">
+                <div class="panel-icon">
+                    <i class="fa-solid fa-user-lock"></i>
+                </div>
+                <h2>Login</h2>
+                <p class="login-subtitle">Enter your username and password.</p>
+
+                <form id="loginForm" autocomplete="on">
+                    <div class="input-group">
+                        <label for="username">Username</label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-user"></i>
+                            <input type="text" id="username" name="username" placeholder="Enter your ID" autocomplete="username" spellcheck="false" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="password" name="password" placeholder="Enter password" autocomplete="current-password" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-login" id="loginBtn">Login <i class="fa-solid fa-arrow-right-to-bracket"></i></button>
+                    <div id="errorMsg" class="error-msg"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+            handleLogin();
+        });
+
+        async function handleLogin() {
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
+            const errorMsg = document.getElementById('errorMsg');
+            const loginBtn = document.getElementById('loginBtn');
+
+            if (!user || !pass) {
+                errorMsg.innerText = "আইডি এবং পাসওয়ার্ড দিন!";
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = 'Checking... <i class="fa-solid fa-spinner fa-spin"></i>';
+            errorMsg.style.display = 'none';
+
+            try {
+                const response = await fetch(`${window.APP_CONFIG.API_BASE_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: user, password: pass })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    localStorage.setItem('isLoggedIn', 'true');
+                    window.location.href = 'index.html';
+                } else {
+                    errorMsg.innerText = data.message;
+                    errorMsg.style.display = 'block';
+                }
+            } catch (err) {
+                errorMsg.innerText = "সার্ভার অফ আছে। Node.js রান করুন।";
+                errorMsg.style.display = 'block';
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = 'Login <i class="fa-solid fa-arrow-right-to-bracket"></i>';
+            }
+        }
+    </script>
+</body>
+</html>

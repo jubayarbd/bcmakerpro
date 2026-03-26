@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BC Auto-Filler Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="config.js"></script>
+    <script>
+    if(localStorage.getItem('isLoggedIn') !== 'true') {
+        window.location.href = 'login.html'; 
+    }
+</script>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fa-solid fa-certificate"></i> BC Auto-Filler</h2>
+            <button class="theme-toggle" id="themeToggle" title="Toggle Dark/Light Mode">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+        </div>
+
+        <div class="auto-scrap-section">
+            <div class="section-title" style="margin-top: 0; border: none; padding-top: 0;">
+                <i class="fa-solid fa-robot"></i> অটো ডাটা স্ক্র্যাপ (BDRIS)
+            </div>
+            
+            <div class="input-group">
+                <label>নিবন্ধন নম্বর (17 Digits):</label>
+                <input type="text" id="scrap_reg_num" placeholder="20158514240111173">
+            </div>
+            <div class="input-group">
+                <label>জন্ম তারিখ (YYYY-MM-DD):</label>
+                <input type="text" id="scrap_dob" placeholder="2015-08-29">
+            </div>
+            
+            <div class="captcha-box">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <img id="captchaImage" src="" alt="Loading Captcha...">
+                    <button type="button" class="btn-icon" onclick="loadCaptcha()" title="Refresh Captcha">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                    </button>
+                </div>
+                <input type="text" id="scrap_captcha" placeholder="ক্যাপচার যোগফল/বিয়োগফল লিখুন" style="margin-top:10px; text-align:center; font-weight: bold;">
+            </div>
+            
+            <button type="button" id="fetchDataBtn" class="btn btn-fetch" onclick="fetchOfficialData()">
+                <i class="fa-solid fa-cloud-arrow-down"></i> Get Data Auto
+            </button>
+            <div id="fetchError" class="error-msg"></div>
+            <div id="fetchSuccess" style="color: #10b981; font-size: 13px; margin-top: 8px; display: none; text-align: center; font-weight: bold;"></div>
+        </div>
+
+        <div class="section-title"><i class="fa-solid fa-pen-to-square"></i> ম্যানুয়াল / প্রশাসনিক তথ্য</div>
+        <div class="input-group">
+            <label>নিবন্ধন নম্বর (Reg Number):</label>
+            <input type="text" id="in_reg_num">
+        </div>
+        <div class="input-group">
+            <label>নিবন্ধনের তারিখ:</label>
+            <input type="text" id="in_reg_date">
+        </div>
+        <div class="input-group">
+            <label>প্রদানের তারিখ:</label>
+            <input type="text" id="in_iss_date">
+        </div>
+
+        <div class="section-title"><i class="fa-solid fa-user"></i> ব্যক্তিগত তথ্য</div>
+        <div class="input-group">
+            <label>জন্ম তারিখ:</label>
+            <input type="text" id="in_dob">
+        </div>
+        <div class="input-group">
+            <label>লিঙ্গ (Sex):</label>
+            <select id="in_sex">
+                <option value="">সিলেক্ট করুন</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>কথায় (DOB in Words):</label>
+            <input type="text" id="in_dob_word">
+        </div>
+        <div class="input-group">
+            <label>নাম (বাংলা):</label>
+            <input type="text" id="in_name_bn">
+        </div>
+        <div class="input-group">
+            <label>Name (English):</label>
+            <input type="text" id="in_name_en">
+        </div>
+
+        <div class="section-title"><i class="fa-solid fa-users"></i> পিতামাতার তথ্য</div>
+        <div class="input-group">
+            <label>মাতার নাম (বাংলা):</label>
+            <input type="text" id="in_mother_bn">
+        </div>
+        <div class="input-group">
+            <label>Mother's Name (English):</label>
+            <input type="text" id="in_mother_en">
+        </div>
+        <div class="input-group">
+            <label>পিতার নাম (বাংলা):</label>
+            <input type="text" id="in_father_bn">
+        </div>
+        <div class="input-group">
+            <label>Father's Name (English):</label>
+            <input type="text" id="in_father_en">
+        </div>
+
+        <div class="section-title"><i class="fa-solid fa-location-dot"></i> ঠিকানা ও স্থান</div>
+        <div class="input-group">
+            <label>জন্মস্থান (বাংলা):</label>
+            <input type="text" id="in_pob_bn">
+        </div>
+        <div class="input-group">
+            <label>Place of Birth (English):</label>
+            <input type="text" id="in_pob_en">
+        </div>
+        <div class="input-group">
+            <label>স্থায়ী ঠিকানা (বাংলা):</label>
+            <textarea id="in_addr_bn" rows="2"></textarea>
+        </div>
+        <div class="input-group">
+            <label>Permanent Address (English):</label>
+            <textarea id="in_addr_en" rows="2"></textarea>
+        </div>
+
+        <div class="btn-area">
+            <button class="btn btn-p" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</button>
+            <button class="btn btn-d" onclick="downloadImage()"><i class="fa-solid fa-download"></i> Download</button>
+        </div>
+        <button class="btn" style="background: #ef4444; margin-top: 10px; width: 100%;" onclick="logout()">
+            <i class="fa-solid fa-power-off"></i> Logout
+        </button>
+    </div>
+
+    <div class="preview-area">
+        <div id="certificate-container">
+            <img src="main_bc_bg_clean.jpg" class="bg-img" alt="Certificate">
+
+            <div id="out_barcode_container" class="overlay"><svg id="barcode"></svg></div>
+            <div id="out_reg_num" class="overlay bn-text"></div>
+            <div id="out_reg_date" class="overlay en-text"></div>
+            <div id="out_iss_date" class="overlay en-text"></div>
+            <div id="out_dob" class="overlay en-text left-col"></div>
+            <div id="out_sex" class="overlay en-text"></div>
+            <div id="out_dob_word" class="overlay en-text left-col"></div>
+
+            <div id="out_name_bn" class="overlay bn-text left-col-bold"></div>
+            <div id="out_name_en" class="overlay en-text right-col"></div>
+
+            <div id="out_mother_bn" class="overlay bn-text left-col"></div>
+            <div id="out_mother_en" class="overlay en-text right-col"></div>
+
+            <div id="out_father_bn" class="overlay bn-text left-col"></div>
+            <div id="out_father_en" class="overlay en-text right-col"></div>
+
+            <div id="out_pob_bn" class="overlay bn-text left-col"></div>
+            <div id="out_pob_en" class="overlay en-text right-col"></div>
+            
+            <div id="out_addr_bn" class="overlay bn-text left-col"></div>
+            <div id="out_addr_en" class="overlay en-text"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
