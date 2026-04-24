@@ -109,6 +109,7 @@ body {
 
 .captcha-box {
     background: var(--sidebar-bg);
+    color: #000000;
     padding: 10px;
     border-radius: 6px;
     margin-bottom: 15px;
