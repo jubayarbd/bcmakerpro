@@ -189,8 +189,8 @@ body {
 #barcode { width: 100%; height: auto; max-height: 40px; }
 #out_random_code {top: 19.8%; left: 14%;}
 
-#out_reg_date { top: 33.2%; left: 8.6%; }
-#out_iss_date { top: 33.2%; left: 75%; }
+#out_reg_date { top: 33.2%; left: 8.9%; }
+#out_iss_date { top: 33.2%; left: 75.3%; }
 #out_reg_num { top: 32.9%; left: 51%; transform: translateX(-50%); font-weight: bold; font-size: 17px; -webkit-text-stroke: 0px;}
 
 .left-col { left: 26%; font-size: 16px; }
