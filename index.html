@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <script src="config.js"></script>
     <script>
@@ -145,7 +146,12 @@
         <div id="certificate-container">
             <img src="main_bc_bg_clean.jpg" class="bg-img" alt="Certificate">
 
-            <div id="out_barcode_container" class="overlay"><svg id="barcode"></svg></div>
+            <div id="out_barcode_container" class="overlay">
+                <svg id="barcode"></svg>
+            </div>
+        
+            <div id="out_qrcode" class="overlay" style="top: 8.8%; left: 10.1%;"></div>
+            <div id="out_random_code" style="color: #565656; font-family: sans-serif , 'SolaimanLipi'; font-size: 15px; font-weight: normal; text-align: center; letter-spacing: 0.2px; position: absolute; z-index: 10;"></div>
             <div id="out_reg_num" class="overlay bn-text"></div>
             <div id="out_reg_date" class="overlay en-text"></div>
             <div id="out_iss_date" class="overlay en-text"></div>

@@ -94,6 +94,11 @@ function generateBarcode(value) {
             lineColor: "#333333",
             background: ""
         });
+
+        // বারকোড তৈরি হওয়ার সাথে সাথেই নতুন রেন্ডম কোড জেনারেট হবে
+        generateRandomCode();
+        generateQRCode();
+
         document.getElementById('barcode').style.opacity = '1';
     } catch(e) { }
 }
@@ -181,8 +186,9 @@ async function fetchOfficialData() {
             document.getElementById('in_mother_en').value = toTitleCase(data.mother_en); // Title Case
             document.getElementById('in_father_bn').value = data.father_bn || '';
             document.getElementById('in_father_en').value = toTitleCase(data.father_en); // Title Case
-            document.getElementById('in_pob_bn').value = data.pob_bn || '';
-            document.getElementById('in_pob_en').value = toTitleCase(data.pob_en); // Title Case
+            // add Bangladesh auto to pob
+            document.getElementById('in_pob_bn').value = data.pob_bn ? data.pob_bn + ", বাংলাদেশ" : '';
+            document.getElementById('in_pob_en').value = data.pob_en ? toTitleCase(data.pob_en) + ", Bangladesh" : '';
 
             fields.forEach(f => {
                 const el = document.getElementById(f.in);
@@ -217,3 +223,146 @@ function logout() {
     localStorage.removeItem('isLoggedIn');
     window.location.href = 'login.html';
 }
+
+
+// ==========================================
+// 5. Date to Words Converter (Title Case with 'of')
+// ==========================================
+
+// Ordinal numbers for days
+const dobOrdinals = {
+    1: "FIRST", 2: "SECOND", 3: "THIRD", 4: "FOURTH", 5: "FIFTH", 6: "SIXTH", 7: "SEVENTH", 8: "EIGHTH", 9: "NINTH", 10: "TENTH",
+    11: "ELEVENTH", 12: "TWELFTH", 13: "THIRTEENTH", 14: "FOURTEENTH", 15: "FIFTEENTH", 16: "SIXTEENTH", 17: "SEVENTEENTH", 18: "EIGHTEENTH", 19: "NINETEENTH", 20: "TWENTIETH",
+    21: "TWENTY FIRST", 22: "TWENTY SECOND", 23: "TWENTY THIRD", 24: "TWENTY FOURTH", 25: "TWENTY FIFTH", 26: "TWENTY SIXTH", 27: "TWENTY SEVENTH", 28: "TWENTY EIGHTH", 29: "TWENTY NINTH", 30: "THIRTIETH",
+    31: "THIRTY FIRST"
+};
+
+// Month names
+const dobMonths = {
+    1: "JANUARY", 2: "FEBRUARY", 3: "MARCH", 4: "APRIL", 5: "MAY", 6: "JUNE",
+    7: "JULY", 8: "AUGUST", 9: "SEPTEMBER", 10: "OCTOBER", 11: "NOVEMBER", 12: "DECEMBER"
+};
+
+// Function to convert year to words
+function yearToWords(num) {
+    if (num === 0) return "ZERO";
+    const a = ['', 'ONE ', 'TWO ', 'THREE ', 'FOUR ', 'FIVE ', 'SIX ', 'SEVEN ', 'EIGHT ', 'NINE ', 'TEN ', 'ELEVEN ', 'TWELVE ', 'THIRTEEN ', 'FOURTEEN ', 'FIFTEEN ', 'SIXTEEN ', 'SEVENTEEN ', 'EIGHTEEN ', 'NINETEEN '];
+    const b = ['', '', 'TWENTY ', 'THIRTY ', 'FORTY ', 'FIFTY ', 'SIXTY ', 'SEVENTY ', 'EIGHTY ', 'NINETY '];
+    
+    let str = '';
+    if (num >= 1000) { str += a[Math.floor(num / 1000)] + "THOUSAND "; num %= 1000; }
+    if (num >= 100) { str += a[Math.floor(num / 100)] + "HUNDRED "; num %= 100; }
+    if (num > 0) {
+        if (num < 20) { str += a[num]; } 
+        else { 
+            str += b[Math.floor(num / 10)]; 
+            if (num % 10 > 0) { str += a[num % 10]; } 
+        }
+    }
+    return str.trim();
+}
+
+// Helper function to convert a string to Title Case
+function toTitleCaseWords(str) {
+    return str.toLowerCase().replace(/\b\w/g, s => s.toUpperCase());
+}
+
+// Main function to convert DD/MM/YYYY to words
+function convertDateToWords(dateStr) {
+    const parts = dateStr.split('/');
+    if (parts.length !== 3) return "";
+    
+    let day = parseInt(parts[0], 10);
+    let month = parseInt(parts[1], 10);
+    let year = parseInt(parts[2], 10);
+    
+    if (isNaN(day) || isNaN(month) || isNaN(year)) return "";
+    
+    let dayStr = dobOrdinals[day] || "";
+    let monthStr = dobMonths[month] || "";
+    let yearStr = yearToWords(year);
+    
+    if (!dayStr || !monthStr || !yearStr) return "";
+    
+    // Convert parts to Title Case individually
+    let formattedDay = toTitleCaseWords(dayStr);
+    let formattedMonth = toTitleCaseWords(monthStr);
+    let formattedYear = toTitleCaseWords(yearStr);
+    
+    // Return with lowercase 'of' in the middle
+    return `${formattedDay} of ${formattedMonth} ${formattedYear}`;
+}
+
+// Attach event listeners to input fields
+const dobInput = document.getElementById('in_dob');
+const dobWordInput = document.getElementById('in_dob_word');
+
+if(dobInput && dobWordInput) {
+    dobInput.addEventListener('input', () => {
+        dobWordInput.value = convertDateToWords(dobInput.value);
+        
+        // Dispatch event to ensure real-time preview update on the image
+        dobWordInput.dispatchEvent(new Event('input')); 
+    });
+}
+
+// ==========================================
+// 6. Random 4-Letter Security Code Generator
+// ==========================================
+function generateRandomCode() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let result = '';
+    for (let i = 0; i < 4; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    const codeBox = document.getElementById('out_random_code');
+    if (codeBox) {
+        codeBox.innerText = result;
+    }
+}
+
+// ==========================================
+// 6. Barcode & QR Code Generator
+// ==========================================
+
+function generateRandomString(length) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+}
+
+// QR Code জেনারেট করার ফাংশন
+function generateQRCode() {
+    const qrContainer = document.getElementById("out_qrcode");
+    if (!qrContainer) return;
+    
+    // আগের কিউআর কোড মুছে ফেলা
+    qrContainer.innerHTML = "";
+    
+    // 40-45 অক্ষরের র‍্যান্ডম স্ট্রিং তৈরি করা
+    const randomLength = Math.floor(Math.random() * (45 - 40 + 1)) + 40;
+    const randomSuffix = generateRandomString(randomLength);
+    
+    // মূল URL এর সাথে যুক্ত করা
+    const finalUrl = `https://bdris.gov.bd/certificate/verify?key=${randomSuffix}`;
+    
+    // নতুন QR Code তৈরি করা
+    new QRCode(qrContainer, {
+        text: finalUrl,
+        width: 110, 
+        height: 110,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.M
+    });
+}
+
+
+// পেজ লোড হওয়ার সাথে সাথে একবার জেনারেট করবে
+generateQRCode();
+
+// পেজ লোড হওয়ার সাথে সাথে একবার রেন্ডম কোড জেনারেট করবে
+generateRandomCode();

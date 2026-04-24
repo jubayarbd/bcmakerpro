@@ -186,6 +186,7 @@ body {
 
 #out_barcode_container { top: 8.5%; right: 6.7%; width: 195px; text-align: right; }
 #barcode { width: 100%; height: auto; max-height: 40px; }
+#out_random_code {top: 19.8%; left: 14%;}
 
 #out_reg_date { top: 33.2%; left: 8.6%; }
 #out_iss_date { top: 33.2%; left: 75%; }
