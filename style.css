@@ -195,11 +195,11 @@ body {
 
 .left-col { left: 26%; font-size: 16px; }
 .left-col-bold { left: 26%; font-size: 18px; }
-.right-col { left: 64%; font-size: 16px; }
+.right-col { left: 64.2%; font-size: 16px; }
 
 #out_dob { top: 38.2%; }
 #out_sex { top: 38.1%; left: 69.5%; font-size: 16px; }
-#out_dob_word { top: 41.3%; }
+#out_dob_word { top: 41.2%; }
 #out_name_bn { top: 45.5%; }
 #out_name_en { top: 45.5%; }
 #out_mother_bn { top: 49.2%; font-size: 18px; }

@@ -226,7 +226,7 @@ function logout() {
 
 
 // ==========================================
-// 5. Date to Words Converter (Title Case with 'of')
+// 5. Date to Words Converter (Title Case, Custom Year & 'of')
 // ==========================================
 
 // Ordinal numbers for days
@@ -249,16 +249,34 @@ function yearToWords(num) {
     const a = ['', 'ONE ', 'TWO ', 'THREE ', 'FOUR ', 'FIVE ', 'SIX ', 'SEVEN ', 'EIGHT ', 'NINE ', 'TEN ', 'ELEVEN ', 'TWELVE ', 'THIRTEEN ', 'FOURTEEN ', 'FIFTEEN ', 'SIXTEEN ', 'SEVENTEEN ', 'EIGHTEEN ', 'NINETEEN '];
     const b = ['', '', 'TWENTY ', 'THIRTY ', 'FORTY ', 'FIFTY ', 'SIXTY ', 'SEVENTY ', 'EIGHTY ', 'NINETY '];
     
+    // Helper to get tens
+    function getTens(n) {
+        if (n < 20) return a[n];
+        return b[Math.floor(n / 10)] + (n % 10 > 0 ? a[n % 10] : '');
+    }
+
     let str = '';
+
+    // Special logic for years between 1900 and 1999 (e.g., Nineteen Eighty Four)
+    if (num >= 1900 && num <= 1999) {
+        str = "NINETEEN ";
+        let remainder = num % 100;
+        
+        if (remainder === 0) {
+            str += "HUNDRED ";
+        } else if (remainder < 10) {
+            str += "HUNDRED " + a[remainder]; // 1905 = Nineteen Hundred Five
+        } else {
+            str += getTens(remainder); // 1984 = Nineteen Eighty Four
+        }
+        return str.trim();
+    }
+
+    // Default logic for other years (e.g., 2000+)
     if (num >= 1000) { str += a[Math.floor(num / 1000)] + "THOUSAND "; num %= 1000; }
     if (num >= 100) { str += a[Math.floor(num / 100)] + "HUNDRED "; num %= 100; }
-    if (num > 0) {
-        if (num < 20) { str += a[num]; } 
-        else { 
-            str += b[Math.floor(num / 10)]; 
-            if (num % 10 > 0) { str += a[num % 10]; } 
-        }
-    }
+    if (num > 0) { str += getTens(num); }
+    
     return str.trim();
 }
 
@@ -305,6 +323,8 @@ if(dobInput && dobWordInput) {
         dobWordInput.dispatchEvent(new Event('input')); 
     });
 }
+
+
 
 // ==========================================
 // 6. Random 4-Letter Security Code Generator
