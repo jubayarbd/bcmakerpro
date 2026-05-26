@@ -1,5 +1,13 @@
-@font-face { font-family: 'Nikosh'; src: url('fonts/Nikosh.ttf') format('truetype'); }
-@font-face { font-family: 'SolaimanLipi'; src: url('fonts/SolaimanLipi.ttf') format('truetype'); }
+@font-face { 
+    font-family: 'nikosh'; 
+    src: url('fonts/nikosh.ttf') format('truetype'); 
+    font-display: block;
+}
+@font-face { 
+    font-family: 'solaimanlipi'; 
+    src: url('fonts/solaimanlipi.ttf') format('truetype'); 
+    font-display: block;
+}
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -37,7 +45,7 @@
 
 body {
     display: flex;
-    font-family: 'Inter', 'Nikosh', sans-serif;
+    font-family: 'Inter', 'nikosh', sans-serif;
     height: 100vh;
     overflow: hidden;
     background-color: var(--bg-color);
@@ -180,36 +188,50 @@ body {
 }
 #certificate-container img.bg-img { width: 100%; display: block; }
 
-/* Certificate Overlay Positions (DO NOT CHANGE - based on user calibration) */
+/* Certificate Overlay Positions - Exact Pixel Values */
 .overlay { position: absolute; color: #383A3C; font-size: 13px; white-space: nowrap; z-index: 10; }
-.bn-text { font-family: 'Nikosh', sans-serif; -webkit-text-stroke: 0.18px black;}
-.en-text { font-family: 'SolaimanLipi', sans-serif; text-align: left; -webkit-text-stroke: 0.10px black;}
+.bn-text { font-family: 'nikosh', sans-serif; -webkit-text-stroke: 0.18px currentColor;}
+.en-text { font-family: 'solaimanlipi', sans-serif; text-align: left; -webkit-text-stroke: 0.08px currentColor;}
 
-#out_barcode_container { top: 8.5%; right: 6.7%; width: 195px; text-align: right; }
+
+#out_barcode_container { top: 95px; right: 53px; width: 195px; text-align: right; }
 #barcode { width: 100%; height: auto; max-height: 40px; }
-#out_random_code {top: 19.8%; left: 14%;}
+#out_random_code {top: 222px; left: 111px;}
 
-#out_reg_date { top: 33.2%; left: 8.9%; }
-#out_iss_date { top: 33.2%; left: 75.3%; }
-#out_reg_num { top: 32.9%; left: 51%; transform: translateX(-50%); font-weight: bold; font-size: 17px; -webkit-text-stroke: 0px;}
+#out_reg_date { top: 373px; left: 71px; }
+#out_iss_date { top: 373px; left: 598px; }
+#out_reg_num { top: 363px; left: 405px; transform: translateX(-50%); font-weight: bold; font-size: 17px; -webkit-text-stroke: 0px;}
 
-.left-col { left: 26%; font-size: 16px; }
-.left-col-bold { left: 26%; font-size: 18px; }
-.right-col { left: 64.2%; font-size: 16px; }
+.left-col { left: 206px; font-size: 16px; }
+.left-col-bold { left: 206px; font-size: 18px; }
+.right-col { left: 509.5px; font-size: 16px; }
 
-#out_dob { top: 38.2%; }
-#out_sex { top: 38.1%; left: 69.5%; font-size: 16px; }
-#out_dob_word { top: 41.2%; }
-#out_name_bn { top: 45.5%; }
-#out_name_en { top: 45.5%; }
-#out_mother_bn { top: 49.2%; font-size: 18px; }
-#out_mother_en { top: 49%; }
-#out_father_bn { top: 56%; font-size: 18px; }
-#out_father_en { top: 56.2%; }
-#out_pob_bn { top: 63.1%; font-size: 18px; }
-#out_pob_en { top: 63.3%; }
-#out_addr_bn { top: 67.8%; white-space: normal; width: 230px; font-size: 18px; line-height: 1.3; }
-#out_addr_en { top: 68%; left: 64%; white-space: normal; width: 230px; font-size: 16px; line-height: 1.5; }
+
+#out_union {
+    top: 211px;
+    left: 375px;
+    font-size: 16px;
+}
+
+#out_upazila {
+    top: 239px; 
+    left: 397px;
+    font-size: 16px;
+}
+
+#out_dob { top: 429px; }
+#out_sex { top: 428px; left: 552px; font-size: 16px; }
+#out_dob_word { top: 463px; font-style: italic; }
+#out_name_bn { top: 511px; }
+#out_name_en { top: 513px; }
+#out_mother_bn { top: 553px; font-size: 18px; }
+#out_mother_en { top: 552px; }
+#out_father_bn { top: 629px; font-size: 18px; }
+#out_father_en { top: 632px; }
+#out_pob_bn { top: 709px; font-size: 18px; }
+#out_pob_en { top: 711px; }
+#out_addr_bn { top: 761px; white-space: normal; width: 230px; font-size: 18px; line-height: 1.3; }
+#out_addr_en { top: 764px; left: 508px; white-space: normal; width: 230px; font-size: 16px; line-height: 1.5; }
 
 /* Responsive */
 @media (max-width: 1200px) {
@@ -222,6 +244,10 @@ body {
 
 /* Print Settings */
 @media print {
+    @page {
+        size: A4 portrait;
+        margin: 0; 
+    }
     body { background: #fff; display: block; overflow: visible; }
     .sidebar, .theme-toggle { display: none !important; }
     .preview-area { padding: 0; display: block; }

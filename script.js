@@ -69,7 +69,9 @@ const fields = [
     { in: 'in_mother_bn', out: 'out_mother_bn' }, { in: 'in_mother_en', out: 'out_mother_en' },
     { in: 'in_father_bn', out: 'out_father_bn' }, { in: 'in_father_en', out: 'out_father_en' },
     { in: 'in_pob_bn', out: 'out_pob_bn' }, { in: 'in_pob_en', out: 'out_pob_en' },
-    { in: 'in_addr_bn', out: 'out_addr_bn' }, { in: 'in_addr_en', out: 'out_addr_en' }
+    { in: 'in_addr_bn', out: 'out_addr_bn' }, { in: 'in_addr_en', out: 'out_addr_en' },
+    { in: 'in_random_code', out: 'out_random_code' }, { in: 'in_union', out: 'out_union' },
+    { in: 'in_upazila', out: 'out_upazila' }
 ];
 
 fields.forEach(f => {
@@ -103,12 +105,44 @@ function generateBarcode(value) {
     } catch(e) { }
 }
 
+// function downloadImage() {
+//     html2canvas(document.getElementById('certificate-container'), { scale: 3, useCORS: true }).then(c => {
+//         const link = document.createElement('a');
+//         link.download = 'Birth_Certificate.png';
+//         link.href = c.toDataURL();
+//         link.click();
+//     });
+// }
+
 function downloadImage() {
-    html2canvas(document.getElementById('certificate-container'), { scale: 4, useCORS: true }).then(c => {
-        const link = document.createElement('a');
-        link.download = 'Birth_Certificate.png';
-        link.href = c.toDataURL();
-        link.click();
+    const btn = document.querySelector('.btn-d');
+    const originalText = btn.innerHTML;
+    
+    // বাটন লোডিং স্টেট দেখানোর জন্য
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+    btn.disabled = true;
+
+    // ফন্ট পুরোপুরি লোড হওয়া পর্যন্ত অপেক্ষা করবে
+    document.fonts.ready.then(() => {
+        html2canvas(document.getElementById('certificate-container'), { 
+            scale: 3, // মোবাইলে ক্র্যাশ রোধে ৪ এর বদলে ৩ ব্যবহার করা নিরাপদ
+            useCORS: true,
+            allowTaint: true, // ফন্ট রেন্ডারিংয়ের জন্য সহায়ক
+            logging: false
+        }).then(c => {
+            const link = document.createElement('a');
+            link.download = 'Birth_Certificate.png';
+            link.href = c.toDataURL('image/png', 1.0);
+            link.click();
+            
+            // বাটন আগের অবস্থায় ফিরিয়ে আনা
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }).catch(err => {
+            console.error("Canvas Error: ", err);
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        });
     });
 }
 
@@ -335,9 +369,12 @@ function generateRandomCode() {
     for (let i = 0; i < 4; i++) {
         result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
-    const codeBox = document.getElementById('out_random_code');
-    if (codeBox) {
-        codeBox.innerText = result;
+    // Set the generated code to the input field
+    const inputField = document.getElementById('in_random_code');
+    if (inputField) {
+        inputField.value = result;
+        // Trigger event to update canvas
+        inputField.dispatchEvent(new Event('input'));
     }
 }
 
@@ -356,12 +393,6 @@ function generateRandomString(length) {
 
 // QR Code জেনারেট করার ফাংশন
 function generateQRCode() {
-    const qrContainer = document.getElementById("out_qrcode");
-    if (!qrContainer) return;
-    
-    // আগের কিউআর কোড মুছে ফেলা
-    qrContainer.innerHTML = "";
-    
     // 40-45 অক্ষরের র‍্যান্ডম স্ট্রিং তৈরি করা
     const randomLength = Math.floor(Math.random() * (45 - 40 + 1)) + 40;
     const randomSuffix = generateRandomString(randomLength);
@@ -369,9 +400,26 @@ function generateQRCode() {
     // মূল URL এর সাথে যুক্ত করা
     const finalUrl = `https://bdris.gov.bd/certificate/verify?key=${randomSuffix}`;
     
+    // Set the generated URL to the input field
+    const inputField = document.getElementById('in_qr_link');
+    if (inputField) {
+        inputField.value = finalUrl;
+        // Trigger event to generate QR code on canvas
+        inputField.dispatchEvent(new Event('input'));
+    }
+}
+
+// Function to generate QR code from input field value
+function generateQRCodeFromInput(urlValue) {
+    const qrContainer = document.getElementById("out_qrcode");
+    if (!qrContainer || !urlValue) return;
+    
+    // আগের কিউআর কোড মুছে ফেলা
+    qrContainer.innerHTML = "";
+    
     // নতুন QR Code তৈরি করা
     new QRCode(qrContainer, {
-        text: finalUrl,
+        text: urlValue,
         width: 110, 
         height: 110,
         colorDark : "#000000",
@@ -386,3 +434,12 @@ generateQRCode();
 
 // পেজ লোড হওয়ার সাথে সাথে একবার রেন্ডম কোড জেনারেট করবে
 generateRandomCode();
+// Event listener for QR link input field changes
+const qrLinkInput = document.getElementById('in_qr_link');
+if (qrLinkInput) {
+    qrLinkInput.addEventListener('input', () => {
+        if (qrLinkInput.value) {
+            generateQRCodeFromInput(qrLinkInput.value);
+        }
+    });
+}

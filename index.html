@@ -9,6 +9,8 @@
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="preload" href="fonts/nikosh.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+    <link rel="preload" href="fonts/solaimanlipi.ttf" as="font" type="font/ttf" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
     <script src="config.js"></script>
     <script>
@@ -33,7 +35,7 @@
             
             <div class="input-group">
                 <label>নিবন্ধন নম্বর (17 Digits):</label>
-                <input type="text" id="scrap_reg_num" placeholder="20108514240112345">
+                <input type="text" id="scrap_reg_num" placeholder="20108514240112345" maxlength="17">
             </div>
             <div class="input-group">
                 <label>জন্ম তারিখ (YYYY-MM-DD):</label>
@@ -60,21 +62,39 @@
         <div class="section-title"><i class="fa-solid fa-pen-to-square"></i> ম্যানুয়াল / প্রশাসনিক তথ্য</div>
         <div class="input-group">
             <label>নিবন্ধন নম্বর (Reg Number):</label>
-            <input type="text" id="in_reg_num">
+            <input type="text" id="in_reg_num" placeholder="17 Digit Registration Number" maxlength="17">
         </div>
         <div class="input-group">
             <label>নিবন্ধনের তারিখ:</label>
-            <input type="text" id="in_reg_date">
+            <input type="text" id="in_reg_date" placeholder="DD/MM/YYYY">
         </div>
         <div class="input-group">
             <label>প্রদানের তারিখ:</label>
-            <input type="text" id="in_iss_date">
+            <input type="text" id="in_iss_date" placeholder="DD/MM/YYYY">
+        </div>
+        <div class="input-group">
+            <label>ইউনিয়ন পরিষদের নাম (Union Parishad):</label>
+            <input type="text" id="in_union" placeholder="Kursha Union Parishad">
+        </div>
+        <div class="input-group">
+            <label>উপজেলা, জেলা (Upazila, Zila):</label>
+            <input type="text" id="in_upazila" placeholder="Kaunia, Rangpur">
+        </div>
+
+        <div class="section-title"><i class="fa-solid fa-qrcode"></i> সিকিউরিটি তথ্য</div>
+        <div class="input-group">
+            <label>QR Code Link:</label>
+            <input type="text" id="in_qr_link">
+        </div>
+        <div class="input-group">
+            <label>Security Code (4 Letters):</label>
+            <input type="text" id="in_random_code" maxlength="4">
         </div>
 
         <div class="section-title"><i class="fa-solid fa-user"></i> ব্যক্তিগত তথ্য</div>
         <div class="input-group">
             <label>জন্ম তারিখ:</label>
-            <input type="text" id="in_dob">
+            <input type="text" id="in_dob"  placeholder="DD/MM/YYYY">
         </div>
         <div class="input-group">
             <label>লিঙ্গ (Sex):</label>
@@ -118,11 +138,11 @@
         <div class="section-title"><i class="fa-solid fa-location-dot"></i> ঠিকানা ও স্থান</div>
         <div class="input-group">
             <label>জন্মস্থান (বাংলা):</label>
-            <input type="text" id="in_pob_bn">
+            <input type="text" id="in_pob_bn"  placeholder="জেলা, দেশ">
         </div>
         <div class="input-group">
             <label>Place of Birth (English):</label>
-            <input type="text" id="in_pob_en">
+            <input type="text" id="in_pob_en"  placeholder="District, Country">
         </div>
         <div class="input-group">
             <label>স্থায়ী ঠিকানা (বাংলা):</label>
@@ -155,6 +175,8 @@
             <div id="out_reg_num" class="overlay bn-text"></div>
             <div id="out_reg_date" class="overlay en-text"></div>
             <div id="out_iss_date" class="overlay en-text"></div>
+            <div id="out_union" class="overlay en-text"></div>
+            <div id="out_upazila" class="overlay en-text"></div>
             <div id="out_dob" class="overlay en-text left-col"></div>
             <div id="out_sex" class="overlay en-text"></div>
             <div id="out_dob_word" class="overlay en-text left-col"></div>
