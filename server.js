@@ -95,6 +95,20 @@ app.post('/get-data', async (req, res) => {
                 if (text === "FATHER'S NAME") result.father_en = tds[i + 1] ? tds[i + 1].innerText.trim() : '';
             }
 
+            const footerParagraph = Array.from(document.querySelectorAll('p')).find(p => /Location of the Register office/i.test(p.innerText));
+            if (footerParagraph) {
+                const em = footerParagraph.querySelector('em');
+                const footerText = em ? em.innerText.trim() : footerParagraph.innerText.trim();
+                const locationText = footerText.replace(/\.$/, '').trim();
+                if (locationText) {
+                    result.reg_location = locationText;
+                    const locationParts = locationText.split(',').map(part => part.trim()).filter(Boolean);
+                    if (locationParts.length > 0) {
+                        result.reg_office = locationParts[0];
+                    }
+                }
+            }
+
             return result;
         });
 

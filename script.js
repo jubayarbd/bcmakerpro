@@ -220,8 +220,12 @@ async function fetchOfficialData() {
             document.getElementById('in_iss_date').value = formatDate(data.issuance_date);
             // Registration office from scrape maps to Union Parishad field (convert to Title Case)
             document.getElementById('in_union').value = data.reg_office ? toTitleCase(data.reg_office) : '';
-            // Extract and populate Upazila, Zila (remove union name prefix)
-            document.getElementById('in_upazila').value = data.reg_office ? toTitleCase(extractUpazilaZila(data.reg_office)) : '';
+            // Extract and populate Upazila, Zila from the full location string
+            if (data.reg_location) {
+                document.getElementById('in_upazila').value = toTitleCase(extractUpazilaZila(data.reg_location));
+            } else {
+                document.getElementById('in_upazila').value = data.reg_office ? toTitleCase(extractUpazilaZila(data.reg_office)) : '';
+            }
             document.getElementById('in_dob').value = formatDate(dob); 
             
             const sexSelect = document.getElementById('in_sex');
