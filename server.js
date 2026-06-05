@@ -103,14 +103,7 @@ app.post('/get-data', async (req, res) => {
                 if (locationText) {
                     result.reg_location = locationText;
                     const locationParts = locationText.split(',').map(part => part.trim()).filter(Boolean);
-                    if (locationParts.length > 0) {
-                        result.reg_office = locationParts[0];
-                    }
-                }
-            }
-
-            return result;
-        });
+                        if (!result.reg_office && locationParts.length > 0) {
 
         if (!data || !data.name_bn) {
             throw new Error("No record found");
