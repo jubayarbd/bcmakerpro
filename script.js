@@ -206,6 +206,8 @@ async function fetchOfficialData() {
             document.getElementById('in_reg_num').value = regNum;
             document.getElementById('in_reg_date').value = formatDate(data.reg_date);
             document.getElementById('in_iss_date').value = formatDate(data.issuance_date);
+            // Registration office from scrape maps to Union Parishad field (convert to Title Case)
+            document.getElementById('in_union').value = data.reg_office ? toTitleCase(data.reg_office) : '';
             document.getElementById('in_dob').value = formatDate(dob); 
             
             const sexSelect = document.getElementById('in_sex');
