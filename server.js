@@ -76,11 +76,26 @@ app.post('/get-data', async (req, res) => {
             const result = {};
             const tds = document.querySelectorAll('td');
 
+            function getTableValue(label) {
+                const labelTd = Array.from(tds).find(td => td.innerText.trim().toUpperCase() === label);
+                if (!labelTd) return '';
+                const row = labelTd.closest('tr');
+                if (!row) return labelTd.nextElementSibling ? labelTd.nextElementSibling.innerText.trim() : '';
+                const cells = Array.from(row.querySelectorAll('td'));
+                const index = cells.indexOf(labelTd);
+                const nextRow = row.nextElementSibling;
+                if (nextRow) {
+                    const nextCells = Array.from(nextRow.querySelectorAll('td'));
+                    if (nextCells[index]) return nextCells[index].innerText.trim();
+                }
+                return labelTd.nextElementSibling ? labelTd.nextElementSibling.innerText.trim() : '';
+            }
+
             for (let i = 0; i < tds.length; i++) {
                 const text = tds[i].innerText.trim().toUpperCase();
 
                 if (text === 'REGISTRATION DATE') result.reg_date = tds[i + 3] ? tds[i + 3].innerText.trim() : '';
-                if (text === 'REGISTRATION OFFICE') result.reg_office = tds[i + 3] ? tds[i + 3].innerText.trim() : '';
+                if (text === 'REGISTRATION OFFICE') result.reg_office = getTableValue('REGISTRATION OFFICE') || (tds[i + 3] ? tds[i + 3].innerText.trim() : '');
                 if (text === 'ISSUANCE DATE') result.issuance_date = tds[i + 3] ? tds[i + 3].innerText.trim() : '';
                 if (text === 'DATE OF BIRTH') result.dob_word = tds[i + 3] ? tds[i + 3].innerText.trim() : '';
                 if (text === 'SEX') result.sex = tds[i + 3] ? tds[i + 3].innerText.trim() : '';
@@ -103,7 +118,14 @@ app.post('/get-data', async (req, res) => {
                 if (locationText) {
                     result.reg_location = locationText;
                     const locationParts = locationText.split(',').map(part => part.trim()).filter(Boolean);
-                        if (!result.reg_office && locationParts.length > 0) {
+                    if (!result.reg_office && locationParts.length > 0) {
+                        result.reg_office = locationParts[0];
+                    }
+                }
+            }
+
+            return result;
+        });
 
         if (!data || !data.name_bn) {
             throw new Error("No record found");
